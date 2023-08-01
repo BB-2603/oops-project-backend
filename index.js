@@ -9,7 +9,7 @@ app.use(cors());
 app.use(express.json());
 mongoose
   .connect(
-    "mongodb+srv://bhavyabansal584:8pzUsLtZZ27jYQ18@cluster0.ezrc7ia.mongodb.net/?retryWrites=true&w=majority"
+    "mongodb+srv://bhavyabansal584:8QhPy6gFzO6XjKI1@cluster0.ezrc7ia.mongodb.net/?retryWrites=true&w=majority"
   )
   .then(() => {
     console.log("database connected successfully");
@@ -126,6 +126,10 @@ app.get("/api/userList", async (req, res) => {
 app.post("/api/addUser", async (req, res) => {
   const data = req.body;
   try {
+    const existinguser = await users.find({ userId: data.userId });
+    if (existinguser.length != 0) {
+      return res.status(400).json({ message: "Username Already Taken" });
+    }
     const newUser = new users(data);
     const newData = await newUser.save();
     return res.status(201).json(newData);
